@@ -6,6 +6,8 @@ const helmet = require("helmet");
 const cors = require("cors");
 
 const authRouter = require("./Auth/auth-router.js");
+const tweetsRouter = require("./Tweets/tweets-router.js");
+
 const usersRouter = require("./Users/users-router.js");
 const restricted = require("./middleware/restricted.js");
 
@@ -14,6 +16,7 @@ server.use(express.json());
 server.use(cors());
 
 server.use("/api/auth", authRouter);
+server.use("/api/tweets", tweetsRouter);
 server.use("/api/users", restricted, usersRouter);
 
 server.get("/", (req, res) => {
