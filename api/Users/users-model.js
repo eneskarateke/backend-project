@@ -1,7 +1,7 @@
 const db = require("../../data/dbConfig.js");
 
 function findAll() {
-  return db("users");
+  return db("users").select("username", "user_id").orderBy("user_id", "asc");
 }
 
 function getByFilter(filtre) {

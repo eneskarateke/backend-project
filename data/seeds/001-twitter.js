@@ -2,23 +2,24 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-
+const { HASH_ROUND } = require("../../config");
+const bcrypt = require("bcryptjs");
 const defautUsers = [
   {
     username: "foo",
-    password: 1234,
+    password: bcrypt.hashSync("1234", HASH_ROUND),
   },
   {
     username: "bar",
-    password: 1234,
+    password: bcrypt.hashSync("1234", HASH_ROUND),
   },
   {
     username: "lol",
-    password: 1234,
+    password: bcrypt.hashSync("1234", HASH_ROUND),
   },
   {
     username: "bro",
-    password: 1234,
+    password: bcrypt.hashSync("1234", HASH_ROUND),
   },
 ];
 

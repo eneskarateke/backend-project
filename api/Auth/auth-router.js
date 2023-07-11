@@ -34,7 +34,7 @@ router.post("/login", payloadCheck, usernameLogin, (req, res, next) => {
     const payload = {
       id: req.user.user_id,
       username: req.user.username,
-      password: req.user.password,
+      // password: req.user.password,
     };
     const options = {
       expiresIn: "24h",
@@ -43,7 +43,7 @@ router.post("/login", payloadCheck, usernameLogin, (req, res, next) => {
     const token = jwt.sign(payload, JWT_SECRET, options);
     res.json({ message: `welcome ${req.user.username}`, token: token });
   } else {
-    next({ status: 401, message: "Gecersiz kriter" });
+    next(error);
   }
 });
 
