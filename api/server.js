@@ -16,8 +16,8 @@ server.use(express.json());
 server.use(cors());
 
 server.use("/api/auth", authRouter);
-server.use("/api/tweets", tweetsRouter);
-server.use("/api/users", restricted, usersRouter);
+server.use("/api/tweets", restricted, tweetsRouter);
+server.use("/api/users", usersRouter);
 
 server.get("/", (req, res) => {
   res.json({ message: "Server up and running..." });
