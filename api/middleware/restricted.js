@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../../config"); // bu secreti kullanın!
+const { JWT_SECRET } = require("../../config");
 // const User = require("../users/users-model");
 
 module.exports = (req, res, next) => {

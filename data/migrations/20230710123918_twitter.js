@@ -7,7 +7,7 @@ exports.up = function (knex) {
     knex.schema
       .createTable("users", (table) => {
         table.increments("user_id").primary();
-        table.string("username", 255).notNullable();
+        table.string("username", 255).notNullable().unique();
         table.string("password", 40).notNullable();
       })
 
@@ -15,7 +15,10 @@ exports.up = function (knex) {
       .createTable("tweets", (table) => {
         table.increments("tweet_id").primary();
         table.string("tweet", 140).notNullable();
-        table.datetime("date_tweet").notNullable();
+        table
+          .datetime("date_tweet")
+          .defaultTo(knex.fn.now()) // Set the default value to the current date and time
+          .notNullable();
         table
           .integer("user_id")
           .unsigned()
