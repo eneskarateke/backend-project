@@ -1,55 +1,40 @@
 const db = require("../../data/dbConfig.js");
 
-function getAll() {
-  return db("tweets");
+async function createFollower(userId, followerId, next) {
+  try {
+    await db("followers").insert({ id_user: userId, id_follower: followerId });
+    return true;
+  } catch (error) {
+    next(error);
+  }
 }
 
-function getByUserId(userId) {
-  return db("tweets")
-    .select("tweets.tweet_id", "users.username", "tweets.tweet")
-    .from("tweets")
-    .join("users", "tweets.user_id", "users.user_id")
-    .where("tweets.user_id", userId);
+async function deleteFollower(userId, followerId) {
+  try {
+    await db("followers")
+      .where({ id_user: userId, id_follower: followerId })
+      .del();
+    return true;
+  } catch (error) {
+    next(error);
+  }
 }
 
-function getByTweetId(tweetId) {
-  return db("tweets")
-    .select("tweets.tweet_id", "users.username", "tweets.tweet")
-    .from("tweets")
-    .join("users", "tweets.user_id", "users.user_id")
-    .where("tweets.tweet_id", tweetId)
-    .first();
+async function getFollowers(userId) {
+  try {
+    const followers = await db("followers")
+      .where("id_user", userId)
+      .join("users", "users.user_id", "=", "followers.id_follower")
+      .select("users.user_id", "users.username");
+
+    return followers;
+  } catch (error) {
+    next(error);
+  }
 }
 
-async function deleteTweet(tweetId) {
-  const deletedTweet = await db("tweets")
-    .where("tweet_id", tweetId)
-    .del()
-    .then(() => {
-      return db("tweets")
-        .select("tweet_id", "tweet")
-        .where("tweet_id", tweetId)
-        .first();
-    });
-
-  return deletedTweet;
-}
-
-async function addTweet(userId, tweet) {
-  const payload = {
-    user_id: userId,
-    tweet: tweet,
-  };
-
-  const [tweetId] = await db("tweets").insert(payload);
-  const addedTweet = await getByTweetId(tweetId);
-
-  return addedTweet;
-}
 module.exports = {
-  getAll,
-  getByUserId,
-  addTweet,
-  getByTweetId,
-  deleteTweet,
+  createFollower,
+  deleteFollower,
+  getFollowers,
 };

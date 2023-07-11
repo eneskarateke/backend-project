@@ -1,49 +1,54 @@
 const router = require("express").Router();
-const Tweets = require("./tweets-model.js");
+const Followers = require("./followers-model");
+const payloadCheck = require("../middleware/followerPayload");
+const userCheck = require("../middleware/followedExist");
 
-// Define routes
-router.get("/", async (req, res, next) => {
-  try {
-    const tweets = await Tweets.getAll();
-    res.json(tweets);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get("/:userId", async (req, res, next) => {
-  const userId = req.params.userId;
-  try {
-    const tweets = await Tweets.getByUserId(userId);
-    res.json(tweets);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/:userId", async (req, res, next) => {
-  try {
-    const userId = req.params.userId;
-    const { tweet } = req.body;
-
-    const addedTweet = await Tweets.addTweet(userId, tweet);
-    res.status(201).json(addedTweet);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.delete("/:tweetId", async (req, res, next) => {
-  const tweetId = req.params.tweetId;
+// Create a follower
+router.post("/", payloadCheck, async (req, res) => {
+  const { id_user, id_follower } = req.body;
 
   try {
-    const toBeDeleted = await Tweets.getByTweetId(tweetId);
-    if (toBeDeleted) {
-      await Tweets.deleteTweet(tweetId);
-      res.json(toBeDeleted);
+    const result = await Followers.createFollower(id_user, id_follower);
+
+    if (result) {
+      return res
+        .status(200)
+        .json({ message: "Follower created successfully." });
     } else {
-      res.status(404).json({ message: "Tweet not found" });
+      return res.status(500).json({ error: "Failed to create follower." });
     }
+  } catch (error) {
+    console.error("Error creating follower:", error);
+    return res.status(500).json({ error: "An unexpected error occurred." });
+  }
+});
+
+// Delete a follower
+router.delete("/", payloadCheck, async (req, res, next) => {
+  const { id_user, id_follower } = req.body;
+
+  try {
+    const result = await Followers.deleteFollower(id_user, id_follower);
+
+    if (result) {
+      return res
+        .status(200)
+        .json({ message: "Follower deleted successfully." });
+    } else {
+      return res.status(500).json({ error: "Failed to delete follower." });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get followers for a user
+router.get("/:userId", userCheck, async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const followers = await Followers.getFollowers(userId);
+    return res.status(200).json({ followers });
   } catch (error) {
     next(error);
   }

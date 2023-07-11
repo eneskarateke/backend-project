@@ -7,6 +7,7 @@ const cors = require("cors");
 
 const authRouter = require("./Auth/auth-router.js");
 const tweetsRouter = require("./Tweets/tweets-router.js");
+const followersRouter = require("./Followers/followers-router.js");
 
 const usersRouter = require("./Users/users-router.js");
 const restricted = require("./middleware/restricted.js");
@@ -18,6 +19,7 @@ server.use(cors());
 server.use("/api/auth", authRouter);
 server.use("/api/tweets", restricted, tweetsRouter);
 server.use("/api/users", usersRouter);
+server.use("/api/followers", followersRouter);
 
 server.get("/", (req, res) => {
   res.json({ message: "Server up and running..." });
