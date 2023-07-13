@@ -57,6 +57,8 @@ exports.up = function (knex) {
           .onDelete("CASCADE") //RESTRICT
           .onUpdate("CASCADE"); //RESTRICT
 
+        table.primary(["tweet_id", "liked_id"]);
+
         table.timestamps(true, true);
       })
       // Create the followers comments
