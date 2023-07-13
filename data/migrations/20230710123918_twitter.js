@@ -29,6 +29,68 @@ exports.up = function (knex) {
           .onUpdate("CASCADE"); //RESTRICT
       })
 
+      // Create the likes table
+
+      .createTable("likes", (table) => {
+        table.increments("id_like").primary();
+        table
+          .integer("tweet_id")
+          .unsigned()
+          .notNullable()
+          .references("tweet_id")
+          .inTable("tweets")
+          .onDelete("CASCADE") //RESTRICT
+          .onUpdate("CASCADE"); //RESTRICT
+        table
+          .integer("tweeted_id")
+          .unsigned()
+          .references("user_id")
+          .inTable("users")
+          .onDelete("CASCADE") //RESTRICT
+          .onUpdate("CASCADE"); //RESTRICT
+
+        table
+          .integer("liked_id")
+          .unsigned()
+          .references("user_id")
+          .inTable("users")
+          .onDelete("CASCADE") //RESTRICT
+          .onUpdate("CASCADE"); //RESTRICT
+
+        table.timestamps(true, true);
+      })
+      // Create the followers comments
+
+      .createTable("comments", (table) => {
+        table.increments("id_comment").primary();
+        table
+          .integer("tweet_id")
+          .unsigned()
+          .references("tweet_id")
+          .inTable("tweets")
+          .onDelete("CASCADE") //RESTRICT
+          .onUpdate("CASCADE"); //RESTRICT;
+
+        table
+          .integer("tweeted_id")
+          .unsigned()
+          .references("user_id")
+          .inTable("users")
+          .onDelete("CASCADE") //RESTRICT
+          .onUpdate("CASCADE"); //RESTRICT;
+
+        table
+          .integer("commented_id")
+          .unsigned()
+          .references("user_id")
+          .inTable("users")
+          .onDelete("CASCADE") //RESTRICT
+          .onUpdate("CASCADE"); //RESTRICT;
+
+        table.text("comment_text");
+        table.timestamps(true, true);
+      })
+
       // Create the followers table
       .createTable("followers", (table) => {
         table
@@ -61,6 +123,8 @@ exports.up = function (knex) {
 exports.down = function (knex) {
   return knex.schema
     .dropTableIfExists("followers")
+    .dropTableIfExists("comments")
+    .dropTableIfExists("likes")
     .dropTableIfExists("tweets")
     .dropTableIfExists("users");
 };

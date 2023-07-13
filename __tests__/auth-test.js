@@ -16,20 +16,28 @@ describe("AUTH", () => {
     const payload = { username: "enes", password: "1234" };
     const res = await request(server).post("/api/auth/register").send(payload);
     expect(res.body).toHaveProperty("user_id", 1);
-    expect(res.body).toHaveProperty("username", "enes");
   });
-  test("[2] register failure", async () => {
+
+  test("[2] register success", async () => {
+    const payload = { username: "hamza", password: "1234" };
+    const res = await request(server).post("/api/auth/register").send(payload);
+    expect(res.body).toHaveProperty("username", "hamza");
+  });
+
+  test("[3] register failure", async () => {
     const payload = { username: "enes", password: "12345" };
     const res = await request(server).post("/api/auth/register").send(payload);
     expect(res.body).toHaveProperty("message", "User zaten tanımlı");
   });
-  test("[3] login success", async () => {
+
+  test("[4] login success", async () => {
     const payload = { username: "enes", password: "1234" };
     const res = await request(server).post("/api/auth/login").send(payload);
     expect(res.body).toHaveProperty("token");
     expect(res.body).toHaveProperty("message", "welcome enes");
   });
-  test("[4] login failure", async () => {
+
+  test("[5] login failure", async () => {
     const payload = { username: "mahmut", password: "1234" };
     const res = await request(server).post("/api/auth/login").send(payload);
     expect(res.body).not.toHaveProperty("token");
@@ -38,11 +46,12 @@ describe("AUTH", () => {
 });
 
 describe("Tweets", () => {
-  test("[5] can't get tweets without token", async () => {
+  test("[6] can't get tweets without token", async () => {
     const res = await request(server).get("/api/tweets/");
     expect(res.body).toHaveProperty("message", "Token gereklidir");
   });
-  test("[6] get tweets with token", async () => {
+
+  test("[7] get tweets with token", async () => {
     const payload = { username: "enes", password: "1234" };
     const loginRes = await request(server)
       .post("/api/auth/login")
@@ -53,7 +62,8 @@ describe("Tweets", () => {
       .set("Authorization", loginRes.body.token);
     expect(res.body).toHaveLength(0);
   });
-  test("[7] post tweets", async () => {
+
+  test("[8] post tweets", async () => {
     const payload = { username: "enes", password: "1234" };
     const loginRes = await request(server)
       .post("/api/auth/login")
@@ -106,7 +116,7 @@ describe("followers", () => {
     tokenUser2 = loginResUser2.body.token;
   });
 
-  test("[8] get followers", async () => {
+  test("[9] get followers", async () => {
     const res = await request(server)
       .get("/api/followers/1")
       .set("Authorization", tokenUser1);
@@ -115,11 +125,11 @@ describe("followers", () => {
     expect(Array.isArray(res.body.followers)).toBe(true);
   });
 
-  test("[9] create follower", async () => {
+  test("[10] create follower", async () => {
     const res = await request(server)
       .post("/api/followers")
       .set("Authorization", tokenUser2)
-      .send({ id_user: 1 });
+      .send({ id_user: 1, id_follower: 2 });
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty(
       "message",
@@ -127,11 +137,11 @@ describe("followers", () => {
     );
   });
 
-  test("[10] delete follower", async () => {
+  test("[11] delete follower", async () => {
     const res = await request(server)
       .delete("/api/followers")
       .set("Authorization", tokenUser2)
-      .send({ id_user: 1 });
+      .send({ id_user: 1, id_follower: 2 });
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty(
       "message",
