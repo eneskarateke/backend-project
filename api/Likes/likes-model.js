@@ -1,18 +1,11 @@
 const db = require("../../data/dbConfig");
 
-async function likeTweet(tweet_id, liked_id) {
+async function likeTweet(tweet_id, liked_id, tweetBy) {
   try {
-    const tweet = await db("tweets").where("tweet_id", tweet_id).first();
-    if (!tweet) {
-      throw new Error("Tweet not found");
-    }
-
-    const tweeted_id = tweet.user_id;
-
     const payload = {
       tweet_id: tweet_id,
       liked_id: liked_id,
-      tweeted_id: tweeted_id,
+      tweeted_id: tweetBy,
     };
 
     const [id_like] = await db("likes").insert(payload);

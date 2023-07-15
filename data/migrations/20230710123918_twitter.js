@@ -16,17 +16,14 @@ exports.up = function (knex) {
         table.increments("tweet_id").primary();
         table.string("tweet", 140).notNullable();
         table
-          .datetime("date_tweet")
-          .defaultTo(knex.fn.now()) // Set the default value to the current date and time
-          .notNullable();
-        table
           .integer("user_id")
           .unsigned()
           .notNullable()
           .references("user_id")
           .inTable("users")
-          .onDelete("CASCADE") //RESTRICT
-          .onUpdate("CASCADE"); //RESTRICT
+          .onDelete("CASCADE")
+          .onUpdate("CASCADE");
+        table.timestamps(true, true);
       })
 
       // Create the likes table
@@ -39,23 +36,23 @@ exports.up = function (knex) {
           .notNullable()
           .references("tweet_id")
           .inTable("tweets")
-          .onDelete("CASCADE") //RESTRICT
-          .onUpdate("CASCADE"); //RESTRICT
+          .onDelete("CASCADE")
+          .onUpdate("CASCADE");
         table
           .integer("tweeted_id")
           .unsigned()
           .references("user_id")
           .inTable("users")
-          .onDelete("CASCADE") //RESTRICT
-          .onUpdate("CASCADE"); //RESTRICT
+          .onDelete("CASCADE")
+          .onUpdate("CASCADE");
 
         table
           .integer("liked_id")
           .unsigned()
           .references("user_id")
           .inTable("users")
-          .onDelete("CASCADE") //RESTRICT
-          .onUpdate("CASCADE"); //RESTRICT
+          .onDelete("CASCADE")
+          .onUpdate("CASCADE");
 
         table.primary(["tweet_id", "liked_id"]);
 
@@ -70,24 +67,24 @@ exports.up = function (knex) {
           .unsigned()
           .references("tweet_id")
           .inTable("tweets")
-          .onDelete("CASCADE") //RESTRICT
-          .onUpdate("CASCADE"); //RESTRICT;
+          .onDelete("CASCADE")
+          .onUpdate("CASCADE");
 
         table
           .integer("tweeted_id")
           .unsigned()
           .references("user_id")
           .inTable("users")
-          .onDelete("CASCADE") //RESTRICT
-          .onUpdate("CASCADE"); //RESTRICT;
+          .onDelete("CASCADE")
+          .onUpdate("CASCADE");
 
         table
           .integer("commented_id")
           .unsigned()
           .references("user_id")
           .inTable("users")
-          .onDelete("CASCADE") //RESTRICT
-          .onUpdate("CASCADE"); //RESTRICT;
+          .onDelete("CASCADE")
+          .onUpdate("CASCADE");
 
         table.text("comment_text");
         table.timestamps(true, true);
@@ -101,8 +98,8 @@ exports.up = function (knex) {
           .notNullable()
           .references("user_id")
           .inTable("users")
-          .onDelete("CASCADE") //RESTRICT
-          .onUpdate("CASCADE"); //RESTRICT;
+          .onDelete("CASCADE")
+          .onUpdate("CASCADE");
 
         table
           .integer("id_follower")
@@ -110,8 +107,8 @@ exports.up = function (knex) {
           .notNullable()
           .references("user_id")
           .inTable("users")
-          .onDelete("CASCADE") //RESTRICT
-          .onUpdate("CASCADE"); //RESTRICT;
+          .onDelete("CASCADE")
+          .onUpdate("CASCADE");
 
         table.primary(["id_user", "id_follower"]);
       })

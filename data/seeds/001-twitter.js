@@ -21,14 +21,14 @@ const defaultUsers = [
 ];
 
 const defaultTweets = [
-  { tweet: "Tweet 1 by foo", date_tweet: new Date(), user_id: 1 },
-  { tweet: "Tweet 2 by foo", date_tweet: new Date(), user_id: 1 },
-  { tweet: "Tweet 1 by bar", date_tweet: new Date(), user_id: 2 },
-  { tweet: "Tweet 2 by bar", date_tweet: new Date(), user_id: 2 },
-  { tweet: "Tweet 1 by lol", date_tweet: new Date(), user_id: 3 },
-  { tweet: "Tweet 2 by lol", date_tweet: new Date(), user_id: 3 },
-  { tweet: "Tweet 1 by bro", date_tweet: new Date(), user_id: 4 },
-  { tweet: "Tweet 2 by bro", date_tweet: new Date(), user_id: 4 },
+  { tweet: "Tweet 1 by foo", user_id: 1 },
+  { tweet: "Tweet 2 by foo", user_id: 1 },
+  { tweet: "Tweet 1 by bar", user_id: 2 },
+  { tweet: "Tweet 2 by bar", user_id: 2 },
+  { tweet: "Tweet 1 by lol", user_id: 3 },
+  { tweet: "Tweet 2 by lol", user_id: 3 },
+  { tweet: "Tweet 1 by bro", user_id: 4 },
+  { tweet: "Tweet 2 by bro", user_id: 4 },
 ];
 
 const defaultFollowers = [

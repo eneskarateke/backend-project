@@ -1,4 +1,4 @@
-const UserModel = require("../Users/users-model");
+const UserModel = require("../../Users/users-model");
 
 module.exports = async (req, res, next) => {
   const user = UserModel.getById(req.params.id);

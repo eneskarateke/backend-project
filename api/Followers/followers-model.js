@@ -1,11 +1,12 @@
 const db = require("../../data/dbConfig.js");
 
 async function createFollower(userId, followerId) {
-  const followers = await db("followers").insert({
+  const [newFollowerId] = await db("followers").insert({
     id_user: userId,
     id_follower: followerId,
   });
-  return followers;
+
+  return newFollowerId;
 }
 
 async function deleteFollower(userId, followerId) {
@@ -21,11 +22,23 @@ async function getFollowers(userId) {
     .join("users", "users.user_id", "=", "followers.id_follower")
     .select("users.user_id", "users.username");
 
-  return followers;
+  const followedUser = await getUserById(userId);
+
+  return {
+    user_id: Number(userId),
+    username: followedUser.username,
+    followers,
+  };
+}
+
+async function getUserById(userId) {
+  const user = await db("users").where("user_id", userId).first();
+  return user;
 }
 
 module.exports = {
   createFollower,
   deleteFollower,
   getFollowers,
+  getUserById,
 };

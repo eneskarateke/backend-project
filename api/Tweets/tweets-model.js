@@ -14,7 +14,12 @@ function getByUserId(userId) {
 
 function getByTweetId(tweetId) {
   return db("tweets")
-    .select("tweets.tweet_id", "users.username", "tweets.tweet")
+    .select(
+      "tweets.tweet_id",
+      "users.username",
+      "users.user_id",
+      "tweets.tweet"
+    )
     .from("tweets")
     .join("users", "tweets.user_id", "users.user_id")
     .where("tweets.tweet_id", tweetId)
