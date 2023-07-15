@@ -4,7 +4,7 @@ const payloadCheck = require("./FollowerMiddlewares/followerPayload");
 const userCheck = require("./FollowerMiddlewares/followedExist");
 const alreadyFollower = require("./FollowerMiddlewares/alreadyFollower");
 const cannotFollowSelf = require("./FollowerMiddlewares/cannotFollowSelf");
-
+const isThereAnyFollow = require("./FollowerMiddlewares/isThereAnyFollow");
 // Create a follower
 router.post(
   "/:id",
@@ -40,21 +40,27 @@ router.post(
 );
 
 // Delete a follower
-router.delete("/", payloadCheck, async (req, res, next) => {
-  const { id_user, id_follower } = req.body;
+router.delete(
+  "/:id_user",
+  payloadCheck,
+  isThereAnyFollow,
+  async (req, res, next) => {
+    const { id_follower } = req.body;
+    const id_user = req.params.id_user;
 
-  try {
-    const result = await Followers.deleteFollower(id_user, id_follower);
+    try {
+      const result = await Followers.deleteFollower(id_user, id_follower);
 
-    if (result) {
-      res.status(200).json({ message: "Follower deleted successfully." });
-    } else {
-      throw new Error("Failed to delete follower.");
+      if (result) {
+        res.status(200).json({ message: "Follower deleted successfully." });
+      } else {
+        throw new Error("Failed to delete follower.");
+      }
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 // Get followers for a user
 router.get("/:userId", userCheck, async (req, res, next) => {

@@ -19,10 +19,10 @@ server.use(express.json());
 server.use(cors());
 
 server.use("/api/auth", authRouter);
-server.use("/api/tweets", restricted, tweetsRouter);
 server.use("/api/users", usersRouter);
-server.use("/api/likes", likesRouter);
-server.use("/api/comments", commentsRouter);
+server.use("/api/tweets", restricted, tweetsRouter);
+server.use("/api/likes", restricted, likesRouter);
+server.use("/api/comments", restricted, commentsRouter);
 
 server.use("/api/followers", restricted, followersRouter);
 
