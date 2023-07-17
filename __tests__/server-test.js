@@ -2,9 +2,36 @@ const request = require("supertest");
 const server = require("../api/server");
 const db = require("../data/dbConfig");
 
+let tokenUser1; // Token for user 1
+let tokenUser2; // Token for user 2
+
 beforeAll(async () => {
   await db.migrate.rollback();
   await db.migrate.latest();
+
+  // Register user 1
+  const payloadUser1 = { username: "user1", password: "1234" };
+  await request(server).post("/api/auth/register").send(payloadUser1);
+
+  // Login user 1
+  const loginResUser1 = await request(server)
+    .post("/api/auth/login")
+    .send(payloadUser1);
+  tokenUser1 = loginResUser1.body.token;
+
+  // Register user 2
+  const payloadUser2 = { username: "user2", password: "1234" };
+  await request(server).post("/api/auth/register").send(payloadUser2);
+
+  // Login user 2
+  const loginResUser2 = await request(server)
+    .post("/api/auth/login")
+    .send(payloadUser2);
+  tokenUser2 = loginResUser2.body.token;
+});
+
+afterAll(async () => {
+  await db.destroy();
 });
 
 test("[0] sanity check", () => {
@@ -15,7 +42,7 @@ describe("AUTH", () => {
   test("[1] register success", async () => {
     const payload = { username: "enes", password: "1234" };
     const res = await request(server).post("/api/auth/register").send(payload);
-    expect(res.body).toHaveProperty("user_id", 1);
+    expect(res.body).toHaveProperty("user_id", 3);
   });
 
   test("[2] register success", async () => {
@@ -68,7 +95,6 @@ describe("TWEETS", () => {
     const loginRes = await request(server)
       .post("/api/auth/login")
       .send(payload);
-    //expect(loginRes.body.token.username).toBe('serkan')
     const tweetPayload = { tweet: "test" };
     const res = await request(server)
       .post("/api/tweets/1")
@@ -91,31 +117,6 @@ describe("TWEETS", () => {
 });
 
 describe("FOLLOWERS", () => {
-  let tokenUser1; // Token for user 1
-  let tokenUser2; // Token for user 2
-
-  beforeAll(async () => {
-    // Register user 1
-    const payloadUser1 = { username: "user1", password: "1234" };
-    await request(server).post("/api/auth/register").send(payloadUser1);
-
-    // Login user 1
-    const loginResUser1 = await request(server)
-      .post("/api/auth/login")
-      .send(payloadUser1);
-    tokenUser1 = loginResUser1.body.token;
-
-    // Register user 2
-    const payloadUser2 = { username: "user2", password: "1234" };
-    await request(server).post("/api/auth/register").send(payloadUser2);
-
-    // Login user 2
-    const loginResUser2 = await request(server)
-      .post("/api/auth/login")
-      .send(payloadUser2);
-    tokenUser2 = loginResUser2.body.token;
-  });
-
   test("[9] get followers", async () => {
     const res = await request(server)
       .get("/api/followers/1")
@@ -151,31 +152,6 @@ describe("FOLLOWERS", () => {
 });
 
 describe("LIKES", () => {
-  let tokenUser1; // Token for user 1
-  let tokenUser2; // Token for user 2
-
-  beforeAll(async () => {
-    // Register user 1
-    const payloadUser1 = { username: "user1", password: "1234" };
-    await request(server).post("/api/auth/register").send(payloadUser1);
-
-    // Login user 1
-    const loginResUser1 = await request(server)
-      .post("/api/auth/login")
-      .send(payloadUser1);
-    tokenUser1 = loginResUser1.body.token;
-
-    // Register user 2
-    const payloadUser2 = { username: "user2", password: "1234" };
-    await request(server).post("/api/auth/register").send(payloadUser2);
-
-    // Login user 2
-    const loginResUser2 = await request(server)
-      .post("/api/auth/login")
-      .send(payloadUser2);
-    tokenUser2 = loginResUser2.body.token;
-  });
-
   test("[12] create like", async () => {
     const res = await request(server)
       .post("/api/likes/1")
@@ -225,31 +201,6 @@ describe("LIKES", () => {
 });
 
 describe("COMMENTS", () => {
-  let tokenUser1; // Token for user 1
-  let tokenUser2; // Token for user 2
-
-  beforeAll(async () => {
-    // Register user 1
-    const payloadUser1 = { username: "user1", password: "1234" };
-    await request(server).post("/api/auth/register").send(payloadUser1);
-
-    // Login user 1
-    const loginResUser1 = await request(server)
-      .post("/api/auth/login")
-      .send(payloadUser1);
-    tokenUser1 = loginResUser1.body.token;
-
-    // Register user 2
-    const payloadUser2 = { username: "user2", password: "1234" };
-    await request(server).post("/api/auth/register").send(payloadUser2);
-
-    // Login user 2
-    const loginResUser2 = await request(server)
-      .post("/api/auth/login")
-      .send(payloadUser2);
-    tokenUser2 = loginResUser2.body.token;
-  });
-
   test("[17] create comment", async () => {
     const res = await request(server)
       .post("/api/comments/1")
