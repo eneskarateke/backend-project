@@ -6,8 +6,8 @@ module.exports = async (req, res, next) => {
 
     const existingTweet = await Tweet.getByTweetId(tweetId);
 
-    if (!existingTweet) {
-      return res.json({ message: "Tweet couldn't found!" });
+    if (existingTweet == undefined) {
+      return res.status(404).json({ message: "Tweet couldn't found!" });
     } else {
       req.tweeted_id = existingTweet.user_id;
       next();

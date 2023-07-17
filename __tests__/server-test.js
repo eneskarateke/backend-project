@@ -122,14 +122,14 @@ describe("followers", () => {
       .set("Authorization", tokenUser1);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("followers");
-    expect(Array.isArray(res.body.followers)).toBe(true);
+    expect(res.body.followers.user_id).toBe(1);
   });
 
   test("[10] create follower", async () => {
     const res = await request(server)
-      .post("/api/followers")
+      .post("/api/followers/1")
       .set("Authorization", tokenUser2)
-      .send({ id_user: 1, id_follower: 2 });
+      .send({ id_follower: 2 });
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty(
       "message",
@@ -139,13 +139,87 @@ describe("followers", () => {
 
   test("[11] delete follower", async () => {
     const res = await request(server)
-      .delete("/api/followers")
+      .delete("/api/followers/1")
       .set("Authorization", tokenUser2)
-      .send({ id_user: 1, id_follower: 2 });
+      .send({ id_follower: 2 });
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty(
       "message",
       "Follower deleted successfully."
+    );
+  });
+});
+
+describe("likes", () => {
+  let tokenUser1; // Token for user 1
+  let tokenUser2; // Token for user 2
+
+  beforeAll(async () => {
+    // Register user 1
+    const payloadUser1 = { username: "user1", password: "1234" };
+    await request(server).post("/api/auth/register").send(payloadUser1);
+
+    // Login user 1
+    const loginResUser1 = await request(server)
+      .post("/api/auth/login")
+      .send(payloadUser1);
+    tokenUser1 = loginResUser1.body.token;
+
+    // Register user 2
+    const payloadUser2 = { username: "user2", password: "1234" };
+    await request(server).post("/api/auth/register").send(payloadUser2);
+
+    // Login user 2
+    const loginResUser2 = await request(server)
+      .post("/api/auth/login")
+      .send(payloadUser2);
+    tokenUser2 = loginResUser2.body.token;
+  });
+
+  test("[10] create like", async () => {
+    const res = await request(server)
+      .post("/api/likes/1")
+      .set("Authorization", tokenUser2)
+      .send({ liked_id: 2 });
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("id_like", 1);
+  });
+  test("[11] create like again", async () => {
+    const res = await request(server)
+      .post("/api/likes/1")
+      .set("Authorization", tokenUser2)
+      .send({ liked_id: 3 });
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("id_like", 2);
+  });
+
+  test("[12] olmayan tweeti likelamak", async () => {
+    const res = await request(server)
+      .post("/api/likes/2")
+      .set("Authorization", tokenUser2)
+      .send({ liked_id: 3 });
+    expect(res.status).toBe(404);
+    expect(res.body).toHaveProperty("message", "Tweet couldn't found!");
+  });
+
+  test("[13] undo like", async () => {
+    const res = await request(server)
+      .delete("/api/likes/1")
+      .set("Authorization", tokenUser2)
+      .send({ liked_id: 2 });
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("message", "Like has been undone!");
+  });
+
+  test("[14] liking liked tweet again", async () => {
+    const res = await request(server)
+      .post("/api/likes/1")
+      .set("Authorization", tokenUser2)
+      .send({ liked_id: 3 });
+    expect(res.status).toBe(409);
+    expect(res.body).toHaveProperty(
+      "message",
+      "You have already liked this tweet"
     );
   });
 });

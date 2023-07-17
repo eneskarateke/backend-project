@@ -11,7 +11,9 @@ module.exports = async (req, res, next) => {
       .andWhere("liked_id", "=", likedId);
 
     if (existingLike.length > 0) {
-      return res.json({ message: "You have already liked this tweet" });
+      return res
+        .status(409)
+        .json({ message: "You have already liked this tweet" });
     }
 
     // If the like doesn't exist, proceed to the next middleware or route handler

@@ -41,12 +41,12 @@ router.post(
 
 // Delete a follower
 router.delete(
-  "/:id_user",
+  "/:id",
   payloadCheck,
   isThereAnyFollow,
   async (req, res, next) => {
     const { id_follower } = req.body;
-    const id_user = req.params.id_user;
+    const id_user = req.params.id;
 
     try {
       const result = await Followers.deleteFollower(id_user, id_follower);

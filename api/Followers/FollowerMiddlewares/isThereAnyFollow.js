@@ -2,7 +2,7 @@ const db = require("../../../data/dbConfig");
 
 module.exports = async (req, res, next) => {
   const { id_follower } = req.body;
-  const id_user = req.params.id_user;
+  const id_user = req.params.id;
 
   try {
     const count = await db("followers")

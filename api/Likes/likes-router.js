@@ -1,6 +1,5 @@
 const express = require("express");
 const { likeTweet, unlikeTweet } = require("./likes-model");
-const TweetModel = require("../Tweets/tweets-model");
 const likeExist = require("../middleware/likeExist");
 const tweetExist = require("../Tweets/TweetsMiddlewares/tweetExist");
 
