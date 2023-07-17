@@ -665,6 +665,41 @@
 					"response": []
 				},
 				{
+					"name": "liked tweet does not exist",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJmb28iLCJpYXQiOjE2ODk2MDExNTUsImV4cCI6MTY4OTY4NzU1NX0.mpt1NsVVf78eCcVR9PmTODA0XPbP0PuhD7pe9LR-DoE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"liked_id\": 3\r\n      }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9000/api/likes/10",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"likes",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "new like without token",
 					"request": {
 						"method": "POST",
@@ -789,6 +824,41 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n\r\n      \"comment_text\": \"hahaaha funny\",\r\n\r\n      \"commented_id\": 2\r\n\r\n      }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9000/api/comments/1",
+							"host": [
+								"localhost"
+							],
+							"port": "9000",
+							"path": [
+								"api",
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete comment with token",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJmb28iLCJpYXQiOjE2ODk2MDUwNDYsImV4cCI6MTY4OTY5MTQ0Nn0.5ae8Wmvs2K_2htiuQYSXMw4yiEWTmspzjBqT0-Ud6e4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
