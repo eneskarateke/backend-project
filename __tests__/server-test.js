@@ -45,7 +45,7 @@ describe("AUTH", () => {
   });
 });
 
-describe("Tweets", () => {
+describe("TWEETS", () => {
   test("[6] can't get tweets without token", async () => {
     const res = await request(server).get("/api/tweets/");
     expect(res.body).toHaveProperty("message", "Token gereklidir");
@@ -90,7 +90,7 @@ describe("Tweets", () => {
   });
 });
 
-describe("followers", () => {
+describe("FOLLOWERS", () => {
   let tokenUser1; // Token for user 1
   let tokenUser2; // Token for user 2
 
@@ -150,7 +150,7 @@ describe("followers", () => {
   });
 });
 
-describe("likes", () => {
+describe("LIKES", () => {
   let tokenUser1; // Token for user 1
   let tokenUser2; // Token for user 2
 
@@ -176,7 +176,7 @@ describe("likes", () => {
     tokenUser2 = loginResUser2.body.token;
   });
 
-  test("[10] create like", async () => {
+  test("[12] create like", async () => {
     const res = await request(server)
       .post("/api/likes/1")
       .set("Authorization", tokenUser2)
@@ -184,7 +184,7 @@ describe("likes", () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("id_like", 1);
   });
-  test("[11] create like again", async () => {
+  test("[13] create like again", async () => {
     const res = await request(server)
       .post("/api/likes/1")
       .set("Authorization", tokenUser2)
@@ -193,7 +193,7 @@ describe("likes", () => {
     expect(res.body).toHaveProperty("id_like", 2);
   });
 
-  test("[12] olmayan tweeti likelamak", async () => {
+  test("[14] olmayan tweeti likelamak", async () => {
     const res = await request(server)
       .post("/api/likes/2")
       .set("Authorization", tokenUser2)
@@ -202,7 +202,7 @@ describe("likes", () => {
     expect(res.body).toHaveProperty("message", "Tweet couldn't found!");
   });
 
-  test("[13] undo like", async () => {
+  test("[15] undo like", async () => {
     const res = await request(server)
       .delete("/api/likes/1")
       .set("Authorization", tokenUser2)
@@ -211,7 +211,7 @@ describe("likes", () => {
     expect(res.body).toHaveProperty("message", "Like has been undone!");
   });
 
-  test("[14] liking liked tweet again", async () => {
+  test("[16] liking liked tweet again", async () => {
     const res = await request(server)
       .post("/api/likes/1")
       .set("Authorization", tokenUser2)
@@ -221,5 +221,60 @@ describe("likes", () => {
       "message",
       "You have already liked this tweet"
     );
+  });
+});
+
+describe("COMMENTS", () => {
+  let tokenUser1; // Token for user 1
+  let tokenUser2; // Token for user 2
+
+  beforeAll(async () => {
+    // Register user 1
+    const payloadUser1 = { username: "user1", password: "1234" };
+    await request(server).post("/api/auth/register").send(payloadUser1);
+
+    // Login user 1
+    const loginResUser1 = await request(server)
+      .post("/api/auth/login")
+      .send(payloadUser1);
+    tokenUser1 = loginResUser1.body.token;
+
+    // Register user 2
+    const payloadUser2 = { username: "user2", password: "1234" };
+    await request(server).post("/api/auth/register").send(payloadUser2);
+
+    // Login user 2
+    const loginResUser2 = await request(server)
+      .post("/api/auth/login")
+      .send(payloadUser2);
+    tokenUser2 = loginResUser2.body.token;
+  });
+
+  test("[17] create comment", async () => {
+    const res = await request(server)
+      .post("/api/comments/1")
+      .set("Authorization", tokenUser2)
+      .send({ commented_id: 2, comment_text: "test comment" });
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty("id_comment", 1);
+    expect(res.body).toHaveProperty("tweeted_id", 1);
+    expect(res.body).toHaveProperty("comment_text", "test comment");
+  });
+
+  test("[18] olmayan tweete comment denemesi", async () => {
+    const res = await request(server)
+      .post("/api/comments/2")
+      .set("Authorization", tokenUser2)
+      .send({ commented_id: 2, comment_text: "test comment" });
+    expect(res.status).toBe(404);
+    expect(res.body).toHaveProperty("message", "Tweet couldn't found!");
+  });
+
+  test("[20] delete comment", async () => {
+    const res = await request(server)
+      .delete("/api/comments/1")
+      .set("Authorization", tokenUser2);
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("message", "Comment deleted successfully.");
   });
 });

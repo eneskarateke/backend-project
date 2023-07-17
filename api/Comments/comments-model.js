@@ -63,4 +63,21 @@ async function getTweetWithComments(tweetId) {
   }
 }
 
-module.exports = { createComment, getCommentById, getTweetWithComments };
+async function deleteComment(commentId) {
+  try {
+    const deletedComment = await db("comments")
+      .where("id_comment", commentId)
+      .del();
+
+    return deletedComment;
+  } catch (error) {
+    throw new Error("Failed to delete comment");
+  }
+}
+
+module.exports = {
+  createComment,
+  getCommentById,
+  getTweetWithComments,
+  deleteComment,
+};

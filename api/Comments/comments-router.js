@@ -39,4 +39,20 @@ router.get("/:tweetId", async (req, res, next) => {
   }
 });
 
+router.delete("/:commentId", async (req, res, next) => {
+  const { commentId } = req.params;
+
+  try {
+    const deletedComment = await Comment.deleteComment(commentId);
+
+    if (deletedComment) {
+      res.status(200).json({ message: "Comment deleted successfully." });
+    } else {
+      throw new Error("Failed to delete comment.");
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
