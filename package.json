@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "## Proje Açıklaması",
   "main": "index.js",
-  "scripts": {
+  "scripts": {  
+    "build": "webpack --mode production",
     "server": "nodemon index",
     "start": "node index",
     "migrate": "knex migrate:latest",
@@ -40,6 +41,9 @@
     "jest": "^29.6.1",
     "jwt-decode": "^3.1.2",
     "nodemon": "^3.0.1",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
   }
 }
